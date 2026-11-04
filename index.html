@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Прототип: ворота за номером авто</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceae4;--card:#fff;--ink:#1d1f22;--mute:#6a6e75;--line:#d9d6cd;--sign:#f2b705;--signink:#1d1f22;--ok:#1f8a4c;--bad:#c8402f;--eco:#e3f2e6;--ecoink:#175a30;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181a;--card:#222428;--ink:#f1efe9;--mute:#9aa0a8;--line:#363940;--eco:#1c3325;--ecoink:#9fdcb3}}
+:root[data-theme="dark"]{--bg:#17181a;--card:#222428;--ink:#f1efe9;--mute:#9aa0a8;--line:#363940;--eco:#1c3325;--ecoink:#9fdcb3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;display:flex;justify-content:center;padding:16px}
+.app{width:100%;max-width:390px;background:var(--card);border:1px solid var(--line);border-radius:28px;overflow:hidden;display:flex;flex-direction:column;min-height:720px}
+header{padding:20px 20px 12px;border-bottom:4px solid var(--sign)}
+header h1{font-size:18px;margin:0;font-weight:800}
+header p{margin:2px 0 0;font-size:13px;color:var(--mute)}
+main{flex:1;padding:20px}
+.tabs{display:flex;border-top:1px solid var(--line)}
+.tabs button{flex:1;padding:14px 4px;background:none;border:0;color:var(--mute);font:600 13px Manrope,sans-serif;cursor:pointer;border-top:3px solid transparent;margin-top:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-top-color:var(--sign)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sign);outline-offset:2px}
+section[hidden]{display:none}
+.plate{display:flex;border:3px solid var(--ink);border-radius:8px;overflow:hidden;background:#fff;color:#111;height:72px;margin:8px 0 16px}
+.plate .ua{width:34px;background:#1f5fbf;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.plate .num{flex:1;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;letter-spacing:2px}
+.status{padding:14px;border-radius:12px;background:var(--bg);font-weight:600;font-size:15px;min-height:52px;display:flex;align-items:center;gap:10px}
+.status.open{background:var(--ok);color:#fff}
+.cta{width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:var(--sign);color:var(--signink);font:800 15px Manrope,sans-serif;cursor:pointer}
+.cta.ghost{background:none;border:2px solid var(--line);color:var(--ink)}
+.cmp{margin:18px 0 6px;font-size:13px}
+.bar{height:22px;border-radius:6px;margin:5px 0 10px;display:flex;align-items:center;padding:0 8px;font-weight:600;font-size:12px;color:#fff}
+.eco{background:var(--eco);color:var(--ecoink);border-radius:14px;padding:14px;margin-top:16px;font-size:14px}
+.eco b{font-size:22px;display:block}
+.eco small{display:block;margin-top:4px;opacity:.85}
+h2{font-size:16px;margin:0 0 12px}
+ul.list{list-style:none;margin:0;padding:0}
+ul.list li{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+ul.list li span.t{color:var(--mute);font-size:12px;display:block}
+.del{background:none;border:0;color:var(--bad);font:600 13px Manrope,sans-serif;cursor:pointer;padding:6px}
+.row{display:flex;gap:8px;margin:12px 0}
+input,textarea{font:400 15px Manrope,sans-serif;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%}
+.add{padding:0 16px;border:0;border-radius:10px;background:var(--ink);color:var(--card);font:700 14px Manrope,sans-serif;cursor:pointer}
+.privacy{margin-top:16px;padding:12px;border:1px dashed var(--line);border-radius:12px;font-size:13px;color:var(--mute)}
+.thumbs{display:flex;gap:10px;margin:8px 0 14px}
+.thumbs button{flex:1;font-size:28px;padding:14px;border-radius:12px;border:2px solid var(--line);background:none;cursor:pointer}
+.thumbs button[aria-pressed="true"]{border-color:var(--sign);background:color-mix(in srgb,var(--sign) 20%,transparent)}
+label.chk{display:flex;gap:10px;align-items:center;font-size:14px;margin:12px 0}
+.thanks{margin-top:14px;padding:12px;border-radius:12px;background:var(--eco);color:var(--ecoink);font-weight:600;font-size:14px}
+.note{font-size:12px;color:var(--mute);margin-top:14px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header><h1>Ворота за номером авто</h1><p>Демо-прототип · двір ЖК «Приклад»</p></header>
+  <main>
+    <section id="s1" role="tabpanel">
+      <h2>Проїзд водія</h2>
+      <div class="plate"><div class="ua">UA</div><div class="num" id="plate">— — — —</div></div>
+      <div class="status" id="status">Чекаємо на авто біля воріт</div>
+      <button class="cta" id="sim">Симулювати проїзд</button>
+      <div class="cmp">Час до відкриття воріт</div>
+      <div class="bar" style="width:100%;background:var(--bad)">Bluetooth: 5–10 с</div>
+      <div class="bar" style="width:20%;min-width:96px;background:var(--ok)">Номер: 1,5 с</div>
+      <div class="eco"><span>Сталий дизайн: менше простою двигуна</span><b id="ecoMin">0 хв</b>економія цього місяця у дворі<small>Демо-розрахунок: 6,5 с економії на кожному проїзді.</small></div>
+    </section>
+
+    <section id="s2" role="tabpanel" hidden>
+      <h2>Панель голови ОСББ</h2>
+      <ul class="list" id="plates"></ul>
+      <div class="row"><input id="newPlate" placeholder="Новий номер, напр. КА 5555 ВВ" aria-label="Новий номер" maxlength="12"><button class="add" id="addBtn">Додати</button></div>
+      <button class="cta ghost" id="guest">Гостьовий доступ на 24 години</button>
+      <h2 style="margin-top:20px">Журнал проїздів</h2>
+      <ul class="list" id="log"></ul>
+      <div class="privacy"><b>Приватність.</b> Записи зберігаються лише на локальному сервері будинку й автоматично видаляються через 30 днів. Доступ мають тільки голова ОСББ і адміністратор.</div>
+    </section>
+
+    <section id="s3" role="tabpanel" hidden>
+      <h2>Оцініть проїзд</h2>
+      <div class="thumbs" role="group" aria-label="Оцінка">
+        <button data-v="up" aria-pressed="false" aria-label="Швидко і зручно">👍</button>
+        <button data-v="down" aria-pressed="false" aria-label="Були проблеми">👎</button>
+      </div>
+      <textarea id="comment" rows="4" placeholder="Що можна покращити? Наприклад, ворота відкрилися із запізненням"></textarea>
+      <label class="chk"><input type="checkbox" id="err" style="width:auto"> Номер розпізнано неправильно</label>
+      <button class="cta" id="send">Надіслати відгук</button>
+      <div class="thanks" id="thanks" hidden></div>
+      <button class="cta ghost" id="formBtn">Залишити розгорнутий відгук (Google Form)</button>
+      <p class="note">Відгуки потрапляють у таблицю команди й допомагають покращувати модель розпізнавання. Фото авто не зберігаються разом із відгуком.</p>
+    </section>
+  </main>
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-t="s1">Проїзд</button>
+    <button role="tab" aria-selected="false" data-t="s2">Панель ОСББ</button>
+    <button role="tab" aria-selected="false" data-t="s3">Відгук</button>
+  </nav>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['s1','s2','s3'].forEach(s=>$(s).hidden=s!==b.dataset.t);
+});
+let plates=[{n:'АА 1234 ВВ',t:'Олександр, кв. 12'},{n:'ВС 7788 КХ',t:'Марина, кв. 45'},{n:'АА 9001 ІІ',t:'Ігор, кв. 7'}];
+let log=[];let saved=0;
+function render(){
+  $('plates').innerHTML='';
+  plates.forEach((p,i)=>{const li=document.createElement('li');
+    li.innerHTML='<div>'+p.n+'<span class="t">'+p.t+'</span></div>';
+    const d=document.createElement('button');d.className='del';d.textContent='Видалити';
+    d.onclick=()=>{plates.splice(i,1);render()};li.appendChild(d);$('plates').appendChild(li)});
+  $('log').innerHTML=log.length?'':'<li><span class="t">Поки порожньо. Запустіть симуляцію на першому екрані.</span></li>';
+  log.slice(0,5).forEach(l=>{const li=document.createElement('li');
+    li.innerHTML='<div>'+l.n+'<span class="t">'+l.time+' · відкрито за 1,5 с</span></div>';$('log').appendChild(li)});
+}
+$('addBtn').onclick=()=>{const v=$('newPlate').value.trim().toUpperCase();
+  if(!v){$('newPlate').focus();return}
+  plates.push({n:v,t:'Додано головою ОСББ'});$('newPlate').value='';render()};
+$('guest').onclick=()=>{plates.push({n:'Гість · ДО-'+Math.floor(1000+Math.random()*9000),t:'Діє 24 години'});render()};
+let busy=false;
+$('sim').onclick=()=>{
+  if(busy||!plates.length)return;busy=true;
+  const p=plates[Math.floor(Math.random()*plates.length)];
+  $('plate').textContent='— — — —';$('status').className='status';$('status').textContent='Розпізнаємо номер…';
+  setTimeout(()=>{$('plate').textContent=p.n;$('status').textContent='Номер розпізнано'},700);
+  setTimeout(()=>{
+    $('status').className='status open';$('status').textContent='Ворота відкрито за 1,5 с';
+    saved+=6.5;$('ecoMin').textContent=(saved/60*30).toFixed(1).replace('.',',')+' хв';
+    log.unshift({n:p.n,time:new Date().toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'})});
+    render();busy=false;
+  },1500);
+};
+let vote=null;
+document.querySelectorAll('.thumbs button').forEach(b=>b.onclick=()=>{
+  vote=b.dataset.v;document.querySelectorAll('.thumbs button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+});
+let sent=[];
+$('send').onclick=()=>{
+  if(!vote){$('thanks').hidden=false;$('thanks').textContent='Оберіть 👍 або 👎, щоб надіслати відгук.';return}
+  sent.push({vote,comment:$('comment').value,err:$('err').checked});
+  try{localStorage.setItem('gate_feedback',JSON.stringify(sent))}catch(e){}
+  $('thanks').hidden=false;$('thanks').textContent='Відгук надіслано. Дякуємо! Усього відгуків: '+sent.length;
+  $('comment').value='';$('err').checked=false;vote=null;
+  document.querySelectorAll('.thumbs button').forEach(x=>x.setAttribute('aria-pressed','false'));
+};
+const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLScmRA3XBaDVkAVnytL-XRUdJLm4rnbps1kt0kgJm1SY_0nQYg/viewform?usp=publish-editor";
+$('formBtn').onclick=()=>{
+  if(FORM_URL){window.open(FORM_URL,'_blank','noopener');return}
+  $('thanks').hidden=false;$('thanks').textContent='Посилання на форму буде додано незабаром.';
+};
+render();
+</script>
+</body>
+</html>
